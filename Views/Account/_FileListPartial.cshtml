@@ -1,0 +1,45 @@
+﻿@model IEnumerable<HFile.Models.UploadFileModels>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+<table id="fileTable" class="display table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>File Name</th>
+            <th>Extension</th>
+            <th>Uploaded Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var file in Model)
+            {
+                <tr>
+                    <td>@file.ID</td>
+                    <td>@file.FileName</td>
+                    <td>@file.File_extension</td>
+                    <td>@file.Uploaded_Date.ToString("dd-MMM-yyyy HH:mm")</td>
+                    <td>
+                        <a href="@Url.Content("~/uploads/" + file.FileName + file.File_extension)" target="_blank" class="btn btn-sm btn-info">View</a>
+                        <a href="@Url.Action("EditFile", "Account", new { id = file.ID })" class="btn btn-sm btn-warning">Edit</a>
+                        <form asp-action="DeleteFile" asp-controller="Account" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@file.ID" />
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#fileTable').DataTable();
+    });
+</script>

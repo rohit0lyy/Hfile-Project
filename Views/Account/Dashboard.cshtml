@@ -1,0 +1,81 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "EmptyLayout";
+}
+<style>
+  h1{
+      margin-top:2%;
+  }
+</style>
+
+<center><h1>Upload Medical Files</h1></center><br />
+<center>
+<div class="col-md-8">
+    <div class="card shadow">
+        <div class="card-body">
+            <form id="fileUploadForm" enctype="multipart/form-data" method="post" asp-controller="Account" asp-action="UploadFile">
+                <div class="mb-3">
+                    <label>File Type</label>
+                    <select name="FileType" class="form-select" required>
+                        <option value="">Select File Type</option>
+                        <option value="Lab Report">Lab Report</option>
+                        <option value="Prescription">Prescription</option>
+                        <option value="X-Ray">X-Ray</option>
+                        <option value="Blood Report">Blood Report</option>
+                        <option value="MRI Scan">MRI Scan</option>
+                        <option value="CT Scan">CT Scan</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>File Name</label>
+                    <input type="text" name="FileName" class="form-control" placeholder="e.g., Ankit's Lab Report for Typhoid" required />
+                </div>
+
+                <div class="mb-3">
+                    <label>Choose File (PDF/Image)</label>
+                    <input type="file" name="FileUpload" class="form-control" accept=".pdf,image/*" required />
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Upload File</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <div id="fileList">
+    <!-- Partial content will be loaded here from the controller action -->
+</div>
+</center>
+
+@section Scripts {
+    <!-- jQuery (required) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables CSS + JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(function () {
+            // Load partial by calling the controller action so _FileListPartial() is executed
+            $("#fileList").load("/Account/_FileListPartial", function (response, status, xhr) {
+                if (status === "error") {
+                    console.error("Failed to load file list partial:", xhr.status, xhr.statusText);
+                    $("#fileList").html("<div class='alert alert-danger'>Unable to load files.</div>");
+                    return;
+                }
+
+                // Initialize DataTable after the partial has been injected
+                var $table = $("#fileTable");
+                if ($table.length) {
+                    // If DataTable already initialized, destroy and re-init to avoid duplicates
+                    if ($.fn.DataTable.isDataTable($table)) {
+                        $table.DataTable().clear().destroy();
+                    }
+                    $table.DataTable();
+                }
+            });
+        });
+    </script>
+}

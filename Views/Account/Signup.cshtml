@@ -1,0 +1,55 @@
+﻿@model HFile.Models.UserModel
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<div class="container mt-5">
+    <div class="row align-items-center">
+        <!-- Left Side: Image -->
+        <div class="col-md-6 text-center">
+            <img src="~/img/healtht.png" class="img-fluid" alt="Sign Up Image" />
+        </div>
+
+        <!-- Right Side: Sign Up Form -->
+        <div class="col-md-6">
+            <center><h2>Sign Up</h2></center>
+            <form asp-action="Signup" method="post">
+                <div class="mb-3">
+                    <label>Full Name</label>
+                    <input asp-for="FullName" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input asp-for="Email" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Gender</label>
+                    <select asp-for="Gender" class="form-control">
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>Phone</label>
+                    <input asp-for="Phone" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Password</label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                </div>
+
+                <center> <button type="submit" class="btn btn-success mt-2">Sign Up</button></center>
+            </form>
+            <p class="mt-3">
+                <center><a asp-action="Login">Already have an account? Login</a></center>
+            </p>
+        </div>
+    </div>
+</div>
+
+
+

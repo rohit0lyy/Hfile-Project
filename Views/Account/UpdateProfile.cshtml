@@ -1,0 +1,103 @@
+﻿@{
+    ViewData["Title"] = "Update Profile";
+    Layout = "EmptyLayout"; // Use your empty layout
+}
+
+
+@{
+    var profileImageUrl = ViewBag.ProfileImage != null 
+        ? Url.Content("~/img/UserImages/" + ViewBag.ProfileImage) 
+        : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Left Side: Profile Card -->
+        <div class="col-md-4">
+            <div class="card text-center shadow">
+                <div class="card-body">
+                    <img id="profileImage" src="@profileImageUrl"
+                         class="rounded-circle mb-3"
+                         alt="Profile Image" width="120" height="120">
+
+                    <h5 class="card-title">Welcome, @ViewBag.UserName</h5>
+                    <p class="text-muted">Your Personal Details</p>
+
+                    <!-- Hidden file input -->
+                    <input type="file" id="photoInput" accept="image/*" class="d-none" />
+                    <button type="button" class="btn btn-primary btn-sm mt-2" id="photo_upload">
+                        Change Photo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Edit Form -->
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4 class="mb-3">Edit Profile Details</h4>
+                    <form asp-action="UpdateProfile" method="post">
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" name="Email" class="form-control"
+                                   placeholder="Enter Email" value="@ViewBag.Email" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Gender</label>
+                            <select name="Gender" class="form-select" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male")>Male</option>
+                                <option value="Female")>Female</option>
+                                <option value="Other")>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Phone Number</label>
+                            <input type="tel" name="Phone" class="form-control"
+                                   placeholder="Enter Phone Number" value="@ViewBag.Phone" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Save Details</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // Click "Change Photo" to open file input
+    document.getElementById("photo_upload").addEventListener("click", function () {
+        document.getElementById("photoInput").click();
+    });
+
+    // Upload file via AJAX
+    document.getElementById("photoInput").addEventListener("change", function () {
+        var file = this.files[0];
+        if (!file) return;
+
+        var formData = new FormData();
+        formData.append("file", file);
+
+        fetch("/Account/UploadProfilePhoto", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Update image src dynamically
+                document.getElementById("profileImage").src = "/img/UserImages/" + data.fileName + "?t=" + new Date().getTime();
+                alert("Profile photo updated successfully!");
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(err => alert("Upload failed: " + err));
+    });
+</script>
+}
